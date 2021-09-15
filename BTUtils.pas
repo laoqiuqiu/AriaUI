@@ -184,7 +184,7 @@ destructor TBEList.Destroy;
 var
   i: Integer;
 begin
-  for i := 0 to FList.Count do
+  for i := 0 to FList.Count - 1 do //  Fix index overflow
     TBEElement(FList[i]).Free;
   FreeAndNil(FList);
   inherited Destroy;
@@ -568,6 +568,8 @@ begin
           Element := BELoadElement(Stream);
           if not Assigned(Element) then Break;
           (Result as TBEMap).Items[Key.Value] := Element;
+          if Assigned(Key) then // Fix memory leak
+            FreeAndNil(Key);
         end;
       end;
     'e': ;
